@@ -6,7 +6,7 @@ Usage: python3 merge_research.py <dir-with-ISO2.json-files>
 """
 import json, sys, glob, os
 
-CATS = {'cash','leave','childcare','tax','housing','healthedu'}
+CATS = {'cash','leave','childcare','tax','housing','healthedu','labourtax','workrights'}
 src = sys.argv[1]
 out = 'docs/data/policies.json'
 data = json.load(open(out)) if os.path.exists(out) else {}
@@ -20,7 +20,7 @@ for f in sorted(glob.glob(os.path.join(src, '*.json'))):
     probs = []
     if d.get('iso','').upper() != iso: probs.append('iso mismatch')
     pols = d.get('policies') or []
-    if not 3 <= len(pols) <= 5: probs.append(f'{len(pols)} policies (want 3–5)')
+    if not 3 <= len(pols) <= 8: probs.append(f"{len(pols)} policies (want 3–8)")
     for p in pols:
         if p.get('cat') not in CATS: probs.append(f"bad cat {p.get('cat')!r}")
         for k in ('name','what','value','url'):

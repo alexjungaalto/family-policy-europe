@@ -11,11 +11,13 @@
 <style>
   :root{ --bg:#0f1216; --panel:#161b22f2; --ink:#e6edf3; --muted:#8b949e; --line:#30363d; --accent:#f2a63b;
          --fill:#2b3440; --fillhov:#3a4657; --fillon:#f2a63b; --stroke:#586274;
-         --cash:#57c98a; --leave:#4aa3ff; --childcare:#2dd4bf; --tax:#c98ad6; --housing:#f2a63b; --healthedu:#e0736a; }
+         --cash:#57c98a; --leave:#4aa3ff; --childcare:#2dd4bf; --tax:#c98ad6; --housing:#f2a63b; --healthedu:#e0736a;
+         --labourtax:#e3c341; --workrights:#f472b6; }
   @media (prefers-color-scheme: light){
     :root{ --bg:#f6f8fa; --panel:#fffffff2; --ink:#1f2328; --muted:#59636e; --line:#d0d7de; --accent:#b4690e;
            --fill:#dbe2ea; --fillhov:#c3cfdd; --fillon:#f2a63b; --stroke:#9aa7b8;
-           --cash:#1a7f4b; --leave:#0969da; --childcare:#0d9488; --tax:#8250df; --housing:#b4690e; --healthedu:#c0392b; }
+           --cash:#1a7f4b; --leave:#0969da; --childcare:#0d9488; --tax:#8250df; --housing:#b4690e; --healthedu:#c0392b;
+           --labourtax:#8a6d00; --workrights:#be185d; }
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
@@ -49,7 +51,7 @@
   #panel{top:0;right:0;height:100%;width:min(460px,94vw);border-radius:0;border-top:0;border-bottom:0;border-right:0;
          padding:0;display:none;overflow:hidden;flex-direction:column}
   #panel.open{display:flex}
-  #panel.wide{width:min(760px,96vw)}
+  #panel.wide{width:min(1040px,96vw)}
   #phead{padding:16px 20px 12px;border-bottom:1px solid var(--line);flex:0 0 auto}
   #phead h2{font-size:20px;margin:0 0 4px;display:flex;align-items:center;gap:9px;padding-right:28px}
   #phead .note{font-size:12.5px;color:var(--muted);margin:6px 0 0;line-height:1.5}
@@ -112,12 +114,14 @@
 <div class="card" id="title">
   <h1>Raising a Family in Europe</h1>
   <p>Which government policies <b>actually</b> help a young family that lives from its own wages?
-     Click a country for the <b>3–5 policies</b> that make the biggest material difference — ranked, quantified, with official sources.</p>
+     Click a country for the <b>5–9 policies</b> that make the biggest material difference — cash, leave, childcare
+     and tax, plus <b>lower taxes on wages</b> and the <b>non-monetary rights that come with a job</b> — ranked,
+     quantified, with official sources.</p>
   <div id="persona">👨‍👩‍👧‍👦 <b>The household:</b> two working parents around 30 on ordinary wages,
      renting, <b>no inheritance</b> and no family money, with <b>1–2 children under 6</b>.</div>
   <p class="hint">Click your country →</p>
   <button id="cmpbtn" type="button">📊 Compare all countries
-    <span class="sub">Child cash, paid leave, childcare and tax relief side by side</span></button>
+    <span class="sub">Child cash, leave, childcare, tax relief, wage taxation and work rights side by side</span></button>
   <div id="tcmini">
     <button id="aboutbtn" type="button">ℹ️ About &amp; method</button>
     <button id="sharebtn" type="button">🔗 Copy link</button>
@@ -135,6 +139,8 @@
   <div><span class="sw" style="background:var(--tax)"></span>Tax relief for families</div>
   <div><span class="sw" style="background:var(--housing)"></span>Housing support</div>
   <div><span class="sw" style="background:var(--healthedu)"></span>Free health, meals &amp; schooling</div>
+  <div><span class="sw" style="background:var(--labourtax)"></span>Lower taxes on wages</div>
+  <div><span class="sw" style="background:var(--workrights)"></span>Work rights &amp; in-kind benefits</div>
   <div class="reskey">Per-country quick links:
     <span title="Official government family portal">🏛️</span>
     <span title="Official benefit calculator">🧮</span>
@@ -165,12 +171,16 @@ const CATS = {
   tax:       {label:'Tax relief for families',         ic:'🧾', color:C('--tax')},
   housing:   {label:'Housing support',                 ic:'🏠', color:C('--housing')},
   healthedu: {label:'Free health, meals & schooling',  ic:'🩺', color:C('--healthedu')},
+  labourtax: {label:'Lower taxes on wages',            ic:'💼', color:C('--labourtax')},
+  workrights:{label:'Work rights & in-kind benefits',  ic:'⏰', color:C('--workrights')},
 };
 const HL = [
   {key:'cash',      lbl:'💶 Child cash / month'},
   {key:'leave',     lbl:'👶 Paid leave'},
   {key:'childcare', lbl:'🧸 Childcare'},
   {key:'tax',       lbl:'🧾 Tax relief'},
+  {key:'labourtax', lbl:'💼 Taxes on wages'},
+  {key:'workrights',lbl:'⏰ Work rights'},
 ];
 const RESLINKS = [
   {key:'official',   ic:'🏛️', tip:'Official government family-benefits portal'},
@@ -285,7 +295,9 @@ function openCompare(){
   body.insertAdjacentHTML('beforeend',
     `<p class="disc">Non-euro amounts carry a rough € equivalent at 2026 rates. "Paid leave" is the total paid
      time both parents can take around a birth, at the replacement rate noted. Childcare describes the typical
-     parent fee at median income and whether a place is actually available.</p>`);
+     parent fee at median income and whether a place is actually available. "Taxes on wages" is what the state
+     leaves of two median pay cheques (credits, contribution cuts, exemptions); "Work rights" are statutory leave,
+     part-time and in-kind entitlements that come with the job.</p>`);
 }
 document.getElementById('cmpbtn').onclick = openCompare;
 
@@ -301,7 +313,11 @@ function openAbout(){
       + 'high earners, childcare "rights" without places, and home-buyer schemes that assume a deposit from the parents all look '
       + 'generous on paper and do little for a family that lives from its own pay cheques.',
       'This map takes one clearly defined household — two working parents around 30, renting, no inheritance, one or two small '
-      + 'children — and asks, country by country: which three to five policies move the needle for <em>them</em>?']},
+      + 'children — and asks, country by country: which five to nine policies move the needle for <em>them</em>?',
+      'Two dimensions are easy to forget and are included on purpose: how much of the household\'s <em>wages</em> the '
+      + 'state leaves in its pocket (earned-income credits, contribution cuts, targeted wage-tax exemptions), and the '
+      + '<em>non-monetary</em> side of having a job — paid annual leave, the legal right to reduce hours while a child is '
+      + 'small, job protection, sick-child days, meal vouchers and commuting subsidies.']},
     {c:'--leave', h:'Method', ps:[
       'For each country the entries were compiled from official government sources (ministries, social-insurance bodies, '
       + 'national portals) and EU/OECD overviews, at 2025/2026 rates, and every link was checked. Policies are ranked by the '
@@ -365,7 +381,7 @@ function fitTo(layer){
 function fitIso(iso){ if(bigByIso[iso]) fitTo(bigByIso[iso].layer); }
 
 // Bumped on every deploy (see deploy.sh) so browsers never serve a stale data file.
-const DATA_V='20260917151012';
+const DATA_V='20260917155103';
 Promise.all([
   fetch('data/europe.geojson?v='+DATA_V).then(r=>r.json()),
   fetch('data/policies.json?v='+DATA_V).then(r=>r.json()).catch(()=>({}))
