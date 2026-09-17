@@ -365,7 +365,7 @@ function fitTo(layer){
 function fitIso(iso){ if(bigByIso[iso]) fitTo(bigByIso[iso].layer); }
 
 // Bumped on every deploy (see deploy.sh) so browsers never serve a stale data file.
-const DATA_V='20260917150718';
+const DATA_V='20260917151012';
 Promise.all([
   fetch('data/europe.geojson?v='+DATA_V).then(r=>r.json()),
   fetch('data/policies.json?v='+DATA_V).then(r=>r.json()).catch(()=>({}))
