@@ -153,8 +153,7 @@
   </div>
   <div id="pbody"></div>
 </div>
-<div class="foot">Boundaries © <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> ·
-  tiles © <a href="https://carto.com" target="_blank" rel="noopener">CARTO</a></div>
+<div class="foot">Boundaries © <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a></div>
 <script>
 const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
 const css = getComputedStyle(document.documentElement);
@@ -182,8 +181,9 @@ const FEEDBACK = "mailto:alexjung235@gmail.com?subject=Raising%20a%20Family%20in
 const EU_VIEW = {center:[54,12], zoom:4};
 
 const map = L.map('map',{zoomControl:true,minZoom:3,maxZoom:8,zoomSnap:0.5}).setView(EU_VIEW.center,EU_VIEW.zoom);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/'+(isDark?'dark_nolabels':'light_nolabels')+'/{z}/{x}/{y}{r}.png',{
-  attribution:'&copy; OSM &copy; CARTO',subdomains:'abcd',maxZoom:19}).addTo(map);
+// No basemap tiles on purpose: the country polygons *are* the map (keyless, no
+// third-party requests). Neighbouring countries are drawn greyed-out for context.
+map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
 
 document.getElementById('lgtog').onclick=()=>{
   const l=document.getElementById('legend'); l.classList.toggle('min');
@@ -194,8 +194,8 @@ let DATA={}, geoLayer=null, flagLayer=null, selected=null;
 
 function styleFor(feat){
   const has = !!DATA[feat.properties.iso];
-  return { fillColor: has ? C('--fill') : '#4b5563', fillOpacity: has ? 0.85 : 0.30,
-           color: C('--stroke'), weight:1, opacity:0.8 };
+  return { fillColor: has ? C('--fill') : C('--stroke'), fillOpacity: has ? 0.9 : 0.22,
+           color: C('--stroke'), weight: has ? 1.1 : 0.6, opacity: has ? 0.9 : 0.5 };
 }
 function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function flagEmoji(iso){return iso.toUpperCase().replace(/./g,c=>String.fromCodePoint(0x1F1E6+c.charCodeAt(0)-65));}
@@ -365,7 +365,7 @@ function fitTo(layer){
 function fitIso(iso){ if(bigByIso[iso]) fitTo(bigByIso[iso].layer); }
 
 // Bumped on every deploy (see deploy.sh) so browsers never serve a stale data file.
-const DATA_V='dev';
+const DATA_V='20260917150718';
 Promise.all([
   fetch('data/europe.geojson?v='+DATA_V).then(r=>r.json()),
   fetch('data/policies.json?v='+DATA_V).then(r=>r.json()).catch(()=>({}))
