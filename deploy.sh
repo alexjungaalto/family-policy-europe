@@ -1,7 +1,7 @@
 #!/bin/zsh
 # Publish to GitHub Pages: https://alexjungaalto.github.io/family-policy-europe/
-# The whole site is site/ (index.html + data/europe.geojson + data/policies.json),
-# a static Leaflet app served from the `site/` folder of the main branch.
+# The whole site is docs/ (index.html + data/europe.geojson + data/policies.json),
+# a static Leaflet app served from the `docs/` folder of the main branch.
 #
 #   ./deploy.sh            # link-check, stamp data version, commit, push
 #   SKIP_LINK_CHECK=1 ./deploy.sh
@@ -19,7 +19,7 @@ else
 fi
 
 STAMP=$(date +%Y%m%d%H%M%S)
-sed -i '' "s/const DATA_V='[^']*'/const DATA_V='${STAMP}'/" site/index.html
+sed -i '' "s/const DATA_V='[^']*'/const DATA_V='${STAMP}'/" docs/index.html
 echo "data version stamped: ${STAMP}"
 
 git add -A

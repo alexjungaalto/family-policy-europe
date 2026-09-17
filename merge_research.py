@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Merge per-country research JSON files (one <ISO2>.json each) into
-site/data/policies.json, keyed by ISO2. Validates the schema lightly.
+docs/data/policies.json, keyed by ISO2. Validates the schema lightly.
 
 Usage: python3 merge_research.py <dir-with-ISO2.json-files>
 """
@@ -8,7 +8,7 @@ import json, sys, glob, os
 
 CATS = {'cash','leave','childcare','tax','housing','healthedu'}
 src = sys.argv[1]
-out = 'site/data/policies.json'
+out = 'docs/data/policies.json'
 data = json.load(open(out)) if os.path.exists(out) else {}
 bad = 0
 for f in sorted(glob.glob(os.path.join(src, '*.json'))):

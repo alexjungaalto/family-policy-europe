@@ -33,13 +33,13 @@ differ too much for a single number to be honest.
 ## Layout
 
 ```
-site/
+docs/
   index.html            static Leaflet app (no build step)
   data/europe.geojson   Natural Earth admin-0, Europe + neighbours, ISO2 in properties.iso
   data/policies.json    per-country entries keyed by ISO2 (see schema below)
 merge_research.py       merge per-country <ISO2>.json research files into policies.json
 check_links.py          sweeps every URL in policies.json + index.html; dead links block deploy
-deploy.sh               link-check → stamp DATA_V → commit → push (GitHub Pages serves site/)
+deploy.sh               link-check → stamp DATA_V → commit → push (GitHub Pages serves docs/)
 ```
 
 ### `policies.json` schema (per country)

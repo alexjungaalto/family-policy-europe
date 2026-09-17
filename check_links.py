@@ -2,9 +2,9 @@
 """
 Link checker for the site's URLs.
 
-By default sweeps both site/data/policies.json (per-country resource quick links,
+By default sweeps both docs/data/policies.json (per-country resource quick links,
 org links, cases, US per-state layer) and the hardcoded href links in
-site/index.html. Classifies:
+docs/index.html. Classifies:
 
   HARD  — dead: 404/410, DNS failure, connection refused, or a name that
           doesn't resolve. These are real breakage and (by default) block deploy.
@@ -16,7 +16,7 @@ site/index.html. Classifies:
 Exit code: 0 if no HARD failures, 1 otherwise.
 
 Usage:
-  python3 check_links.py                 # check orgs.json + site/index.html
+  python3 check_links.py                 # check orgs.json + docs/index.html
   python3 check_links.py path/to.json    # a single .json source
   python3 check_links.py path/to.html    # a single .html source
 """
@@ -133,7 +133,7 @@ def sources_from_args():
     if len(sys.argv) > 1:
         p = sys.argv[1]
         return [(p, 'html' if p.endswith('.html') else 'json')]
-    return [('site/data/policies.json', 'json'), ('site/index.html', 'html')]
+    return [('docs/data/policies.json', 'json'), ('docs/index.html', 'html')]
 
 
 def main():
